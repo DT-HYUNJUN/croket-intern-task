@@ -20,7 +20,7 @@ const TaskOne = () => {
       <HomeButton />
       <Box>
         <div>
-          <MyButton text="test" onClick={onClick} />
+          <MyButton text="test" />
         </div>
         <div>
           <MyButton text={`${counter} +`} onClick={onClick} />

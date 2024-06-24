@@ -1,16 +1,16 @@
-import React from "react";
+import { memo } from "react";
 import styled from "styled-components";
 
 interface Props {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const MyButton = (props: Props) => {
   return <Button onClick={props.onClick}>{props.text}</Button>;
 };
 
-export default MyButton;
+export default memo(MyButton);
 
 const Button = styled("button")({
   padding: "8px 12px",

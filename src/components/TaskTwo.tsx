@@ -1,47 +1,36 @@
 import styled from "styled-components";
 import animalData from "../assets/animalData.json";
 import { CountList } from "../types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HomeButton from "./common/HomeButton";
 
 const targetData = animalData;
 
 const TaskTwo = () => {
   // select에 표시 할 값을 담는 state
-  const [titleList, setTitleList] = useState<string[]>(targetData.data.titleList.map(() => ""));
+  const [selectedOption, setSelectedOption] = useState<string[]>(targetData.data.titleList.map(() => ""));
 
   // 해당 select를 활성화 하기 위한 state
   const [selected, setSelected] = useState<boolean[]>(
-    titleList.map((_, index) => {
+    selectedOption.map((_, index) => {
       return index === 0 ? true : false;
     })
   );
 
-  // reaminCount를 계산하기 위해 현재까지 선택한 combi를 담는 state
-  const [selectedCombi, setSelectedCombi] = useState<string[]>([]);
-
-  useEffect(() => {
-    console.log(`titleList: ${titleList}`);
-    console.log(`selected: ${selected}`);
-    console.log(`selectedCombi: ${selectedCombi}`);
-    console.log("-----------------");
-  }, [titleList, selected, selectedCombi]);
-
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const { value } = e.target;
-    titleList[index] = value;
-    setTitleList([...titleList]);
 
-    // 초기화하고 현재 선택한 값을 설정
-    const newSelectedCombi = [...selectedCombi];
-    newSelectedCombi[index] = value;
-    setSelectedCombi(newSelectedCombi.filter(Boolean));
+    // 선택한 select의 index에 value를 설정
+    selectedOption[index] = value;
+    setSelectedOption([...selectedOption]);
+
+    // 다음 select를 활성화
     selected[index + 1] = true;
     setSelected([...selected]);
 
     // 이전 선택이 변경되면 나머지 선택 초기화
-    if (index < selectedCombi.length - 1) {
-      console.log("초기화");
+    if (index < selectedOption.length - 1) {
+      // 선택한 select 다음의 모든 select를 false로 비활성화
       const newSelected = [...selected];
       for (let i = index + 1; i < newSelected.length - 1; i++) {
         newSelected[i] = false;
@@ -49,22 +38,26 @@ const TaskTwo = () => {
       newSelected[index + 1] = true;
       setSelected([...newSelected]);
 
-      const newTitleList = [...titleList];
-      for (let i = index + 1; i < newTitleList.length; i++) {
-        newTitleList[i] = "";
+      // 선택한 option 다음의 모든 option을 ""로 초기화
+      const newSelectedOption = [...selectedOption];
+      for (let i = index + 1; i < newSelectedOption.length; i++) {
+        newSelectedOption[i] = "";
       }
-      setTitleList(newTitleList);
-
-      setSelectedCombi(newSelectedCombi.slice(0, index + 1));
+      setSelectedOption(newSelectedOption);
     }
   };
 
-  //
+  // 단계 별로 남은 수량을 return하는 함수
   const getRemainCount = (countList: CountList[], option: string, index: number): number => {
     let count = 0;
+
+    // countList의 모든 combination을 체크하기 위한 반복문
     countList.forEach((countListItem) => {
-      const temp = selectedCombi.slice(0, index).concat(option);
-      if (temp.every((item) => countListItem.combination.includes(item))) {
+      // 지금까지 선택한 option들과 지금 선택한 option을 하나의 배열로 병합
+      const checkedOptions = selectedOption.slice(0, index).concat(option);
+
+      // 체크한 배열의 모든 요소가 들어있는 combination을 찾기 위한 조건문
+      if (checkedOptions.every((item) => countListItem.combination.includes(item))) {
         count += countListItem.remainCount;
       }
     });
@@ -76,7 +69,7 @@ const TaskTwo = () => {
       <HomeButton />
       <Box>
         {targetData.data.groupList.map((group, index) => (
-          <Select key={index} id={group.title} name={group.title} value={titleList[index]} onChange={(e) => handleSelect(e, index)} disabled={!selected[index]}>
+          <Select key={index} id={group.title} name={group.title} value={selectedOption[index]} onChange={(e) => handleSelect(e, index)} disabled={!selected[index]}>
             <Option disabled value="">
               {group.title}
             </Option>
@@ -93,7 +86,7 @@ const TaskTwo = () => {
             ))}
           </Select>
         ))}
-        <SelectedResult>{selectedCombi.length === targetData.data.titleList.length && titleList.join(" / ")}</SelectedResult>
+        <SelectedResult>{selectedOption.every((item) => item !== "") && selectedOption.join(" / ")}</SelectedResult>
       </Box>
     </Container>
   );

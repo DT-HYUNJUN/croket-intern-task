@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -5,7 +6,7 @@ const HomeButton = () => {
   return <LinkButton to="/">홈</LinkButton>;
 };
 
-export default HomeButton;
+export default memo(HomeButton);
 
 const LinkButton = styled(Link)({
   color: "white",
