@@ -1,43 +1,39 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-import MyButton from "./MyButton";
+import MyButton from "./common/MyButton";
+import TopLeft from "./taskOne/position/TopLeft";
+import TopRight from "./taskOne/position/TopRight";
+import BottomLeft from "./taskOne/position/BottomLeft";
+import BottomRight from "./taskOne/position/BottomRight";
+import HomeButton from "./common/HomeButton";
 
 const TaskOne = () => {
   const [counter, setCounter] = useState(0);
-  const [rows, setRows] = useState<number[]>([]);
-  const [cols, setCols] = useState<number[]>([]);
 
   const onClick = () => {
     if (counter === 20) window.alert("그만~");
-    else {
-      setCounter((prev) => prev + 1);
-      setRows([...rows, 0, 0]);
-      setCols([...cols, 0, 0]);
-    }
+    else setCounter((prev) => prev + 1);
   };
 
   return (
     <Container>
+      <HomeButton />
       <Box>
-        <div>
-          <LinkButton to="/">홈</LinkButton>
-        </div>
         <div>
           <MyButton text="test" onClick={onClick} />
         </div>
         <div>
           <MyButton text={`${counter} +`} onClick={onClick} />
         </div>
-
         <div>
-          {rows.map((row, index) => (
-            <PinWheel key={index}>
-              {cols.map((col, index) => (
-                <div key={index}>⭐</div>
-              ))}
-            </PinWheel>
-          ))}
+          <TriangleBox>
+            <TopLeft counter={counter} />
+            <TopRight counter={counter} />
+          </TriangleBox>
+          <TriangleBox>
+            <BottomLeft counter={counter} />
+            <BottomRight counter={counter} />
+          </TriangleBox>
         </div>
       </Box>
     </Container>
@@ -51,7 +47,7 @@ const Container = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  marginTop: 200,
+  marginTop: 100,
   gap: 20,
 });
 
@@ -63,16 +59,9 @@ const Box = styled("div")({
   width: 1000,
   gap: 20,
   color: "white",
-});
-
-const PinWheel = styled("div")({
-  display: "flex",
-});
-
-const LinkButton = styled(Link)({
-  color: "black",
-  textDecoration: "none",
-  padding: "8px 12px",
   borderRadius: 10,
-  backgroundColor: "white",
+});
+
+const TriangleBox = styled("div")({
+  display: "flex",
 });

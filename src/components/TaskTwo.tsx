@@ -2,7 +2,7 @@ import styled from "styled-components";
 import animalData from "../assets/animalData.json";
 import { CountList } from "../types";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import HomeButton from "./common/HomeButton";
 
 const targetData = animalData;
 
@@ -73,7 +73,7 @@ const TaskTwo = () => {
 
   return (
     <Container>
-      <LinkButton to="/">홈</LinkButton>
+      <HomeButton />
       <Box>
         {targetData.data.groupList.map((group, index) => (
           <Select key={index} id={group.title} name={group.title} value={titleList[index]} onChange={(e) => handleSelect(e, index)} disabled={!selected[index]}>
@@ -94,7 +94,6 @@ const TaskTwo = () => {
           </Select>
         ))}
         <SelectedResult>{selectedCombi.length === targetData.data.titleList.length && titleList.join(" / ")}</SelectedResult>
-        {/* <SelectedResult>{selected.every((value) => value === true) && titleList.join(" / ")}</SelectedResult> */}
       </Box>
     </Container>
   );
@@ -107,7 +106,7 @@ const Container = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  marginTop: 200,
+  marginTop: 100,
   gap: 20,
 });
 
@@ -125,7 +124,10 @@ const Box = styled("div")({
 
 const Select = styled("select")({
   width: 300,
+  height: 40,
   padding: 8,
+  borderRadius: 10,
+  cursor: "pointer",
 });
 
 const Option = styled("option")({
@@ -134,12 +136,4 @@ const Option = styled("option")({
 
 const SelectedResult = styled("div")({
   paddingBottom: 20,
-});
-
-const LinkButton = styled(Link)({
-  color: "white",
-  textDecoration: "none",
-  padding: "16px 24px",
-  borderRadius: 10,
-  backgroundColor: "black",
 });
